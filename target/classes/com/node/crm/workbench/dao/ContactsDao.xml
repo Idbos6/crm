@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.node.crm.workbench.dao.ContactsDao">
+
+    <insert id="save">
+        insert into tbl_contacts(
+
+            id,
+            fullname,
+            owner,
+            source,
+            customerId,
+            appellation,
+            email,
+            mphone,
+            job,
+            birth,
+            createBy,
+            createTime,
+            editBy,
+            editTime,
+            description,
+            contactSummary,
+            nextContactTime,
+            address
+
+        ) values(
+
+            #{id},
+            #{fullname},
+            #{owner},
+            #{source},
+            #{customerId},
+            #{appellation},
+            #{email},
+            #{mphone},
+            #{job},
+            #{birth},
+            #{createBy},
+            #{createTime},
+            #{editBy},
+            #{editTime},
+            #{description},
+            #{contactSummary},
+            #{nextContactTime},
+            #{address}
+        )
+    </insert>
+
+    <select id="getTotalByCondition" resultType="int">
+
+        select count(*)
+        from tbl_contacts con
+        join tbl_user user
+        on con.owner=user.id
+        join tbl_customer cus
+        on con.customerId=cus.id
+
+        <where>
+
+            <if test="owner!=null and owner!=''">
+
+                user.name like '%' #{owner} '%'
+
+            </if>
+
+            <if test="fullname!=null and fullname!=''">
+
+                and con.fullname like '%' #{fullname} '%'
+
+            </if>
+
+            <if test="customerId!=null and customerId!=''">
+
+                and cus.name like '%' #{customerId} '%'
+
+            </if>
+
+            <if test="source!=null and source!=''">
+
+                and con.source like '%' #{source} '%'
+
+            </if>
+
+            <if test="birth!=null and birth!=''">
+
+                and con.birth like '%' #{birth} '%'
+
+            </if>
+
+
+        </where>
+
+    </select>
+
+    <select id="getActivityListByCondition" resultType="Contacts">
+
+        select
+
+        con.id,
+        user.name as owner,
+        con.fullname,
+        cus.name as customerId,
+        con.source,
+        con.birth
+
+        from tbl_contacts con
+        join tbl_user user
+        on con.owner=user.id
+        join tbl_customer cus
+        on con.customerId=cus.id
+
+        <where>
+
+            <if test="owner!=null and owner!=''">
+
+                user.name like '%' #{owner} '%'
+
+            </if>
+
+            <if test="fullname!=null and fullname!=''">
+
+                and con.fullname like '%' #{fullname} '%'
+
+            </if>
+
+            <if test="customerId!=null and customerId!=''">
+
+                and cus.name like '%' #{customerId} '%'
+
+            </if>
+
+            <if test="source!=null and source!=''">
+
+                and con.source like '%' #{source} '%'
+
+            </if>
+
+            <if test="birth!=null and birth!=''">
+
+                and con.birth like '%' #{birth} '%'
+
+            </if>
+
+
+        </where>
+
+        order by con.createTime desc
+
+        limit #{skipCount},#{pageSize}
+
+    </select>
+
+</mapper>
